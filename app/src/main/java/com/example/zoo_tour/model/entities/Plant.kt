@@ -1,0 +1,42 @@
+package com.example.zoo_tour.model.entities
+
+import com.google.gson.annotations.SerializedName
+
+data class Plant(
+    @SerializedName("_id") val id: Int,
+    @SerializedName("_importdate") val importDateRaw: ImportDate,
+    @SerializedName("f_name_ch") val nameChinese: String,
+    @SerializedName("f_summary") val summary: String?,
+    @SerializedName("f_keywords") val keywords: String?,
+    @SerializedName("f_alsoknown") val alsoKnown: String?,
+    @SerializedName("f_geo") val geo: String,
+    @SerializedName("f_location") val location: String,
+    @SerializedName("f_name_en") val nameEnglish: String,
+    @SerializedName("f_name_latin") val nameLatin: String,
+    @SerializedName("f_family") val family: String,
+    @SerializedName("f_genus") val genus: String,
+    @SerializedName("f_brief") val brief: String,
+    @SerializedName("f_feature") val feature: String,
+    @SerializedName("f_function＆application") val functionApplicationRaw: String?,
+    @SerializedName("f_pic01_url") val pic01Url: String?,
+    @SerializedName("f_pic01_alt") val pic01Alt: String?,
+    @SerializedName("f_pic02_url") val pic02Url: String?,
+    @SerializedName("f_pic02_alt") val pic02Alt: String?,
+    @SerializedName("f_pic03_url") val pic03Url: String?,
+    @SerializedName("f_pic03_alt") val pic03Alt: String?,
+    @SerializedName("f_pic04_url") val pic04Url: String?,
+    @SerializedName("f_pic04_alt") val pic04Alt: String?,
+    @SerializedName("f_pdf01_url") val pdf01Url: String?,
+    @SerializedName("f_pdf01_alt") val pdf01Alt: String?,
+    @SerializedName("f_pdf02_url") val pdf02Url: String?,
+    @SerializedName("f_pdf02_alt") val pdf02Alt: String?,
+    @SerializedName("f_voice01_url") val voice01Url: String?,
+    @SerializedName("f_voice01_alt") val voice01Alt: String?,
+    @SerializedName("f_voice02_url") val voice02Url: String?,
+    @SerializedName("f_voice02_alt") val voice02Alt: String?,
+    @SerializedName("f_voice03_url") val voice03Url: String?,
+    @SerializedName("f_voice03_alt") val voice03Alt: String?,
+    @SerializedName("f_vedio_url") val vedioUrl: String?,
+    @SerializedName("f_update") val updateDate: String,
+    @SerializedName("f_cid") val cid: String?
+)
