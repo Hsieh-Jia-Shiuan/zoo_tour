@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -56,4 +57,35 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
+
+    // okhttp
+    implementation(libs.logging.interceptor)
+
+    // retrofit
+    implementation(libs.retrofit)
+
+    // gson
+    implementation(libs.converter.gson)
+
+    // coroutine
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+
+    // koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose.navigation)
+
+    // navigation-compose
+    implementation(libs.androidx.navigation.compose)
+
+    // liveData
+    implementation(libs.androidx.runtime.livedata)
+
+    // glide
+    implementation(libs.glide.compose)
+    kapt(libs.glide.compiler)
 }
