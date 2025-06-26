@@ -15,10 +15,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.zoo_tour.model.dataSource.RemoteDataSource
 import com.example.zoo_tour.model.dataSource.ZooApiService
+import com.example.zoo_tour.model.entities.ExhibitItem
 import com.example.zoo_tour.model.repositories.ZooRepository
 import com.example.zoo_tour.ui.theme.ZooTourTheme
-import com.example.zoo_tour.view.ExhibitDataScreen
-import com.example.zoo_tour.view.AreaListScreen
+import com.example.zoo_tour.util.Constants.BASE_URL
+import com.example.zoo_tour.view.area.AreaListScreen
+import com.example.zoo_tour.view.exhibitData.ExhibitDataScreen
+import com.example.zoo_tour.view.information.InformationScreen
+import com.example.zoo_tour.viewModel.ZooViewModelFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,8 +33,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        val BASE_URL = "https://data.taipei/api/v1/"
 
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -83,6 +85,18 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 repository = repository,
                                 areaName = areaName
+                            )
+                        }
+
+                        // 動物或植物詳細資料
+                        composable("information_detail") { backStackEntry ->
+                            val exhibitItem = navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.get<ExhibitItem>("exhibitItem")
+
+                            InformationScreen(
+                                navController = navController,
+                                exhibitItem = exhibitItem
                             )
                         }
                     }

@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">zoo_tour</string>
+    <string name="app_name">台北市立動物園導覽</string>
+    <string name="reload">重新載入</string>
+    <string name="area_list_title">台北市立動物園</string>
+    <string name="area_list_no_data">沒有館區資料。</string>
+    <string name="exhibit_data_title">館內資料清單</string>
+    <string name="exhibit_data_animals">動物</string>
+    <string name="exhibit_data_plants">植物</string>
+    <string name="exhibit_data_empty">在 \'%s\' 館區沒有找到%s資料。</string>
+    <string name="exhibit_data_all_empty">在 \'%s\' 館區\n沒有找到動物或植物資料。</string>
+    <string name="information_title">詳細資料</string>
+    <string name="information_not_found">沒有找到動物或植物資料。</string>
+
 </resources>

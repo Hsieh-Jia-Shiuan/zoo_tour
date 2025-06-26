@@ -13,6 +13,7 @@ class ZooViewModelFactory(
             @Suppress("UNCHECKED_CAST")
             return AreaListViewModel(repository) as T
         }
+
         if (modelClass.isAssignableFrom(ExhibitDataViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return ExhibitDataViewModel(repository) as T
