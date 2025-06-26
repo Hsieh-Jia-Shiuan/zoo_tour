@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -86,6 +87,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     // glide
+    implementation(libs.glide)
     implementation(libs.glide.compose)
     kapt(libs.glide.compiler)
 }
