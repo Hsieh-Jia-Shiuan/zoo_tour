@@ -56,7 +56,17 @@
 
 ## 🐝 單元測試
 
-- 
+- AreaRepositoryTest：  
+  驗證取得館區資料時，會依序發出 Loading、Success 或 Error 狀態，並檢查資料正確性與錯誤處理。
+- AnimalRepositoryTest：  
+  驗證取得動物資料時，會依序發出 Loading、Success 或 Error 狀態，並檢查資料正確性與錯誤處理。
+- PlantRepositoryTest：  
+  驗證取得植物資料時，會依序發出 Loading、Success 或 Error 狀態，並檢查資料正確性與錯誤處理。
+
+測試內容包含：
+- 正常回傳資料時，資料內容正確
+- 回傳空資料時，能正確處理
+- 發生例外時，能正確回傳錯誤狀態與訊息
 
 ---
 

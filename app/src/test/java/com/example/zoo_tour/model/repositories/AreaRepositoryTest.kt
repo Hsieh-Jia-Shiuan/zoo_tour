@@ -10,21 +10,21 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ZooRepositoryTest {
+class AreaRepositoryTest {
     @Test
     fun `getAreas emits Loading then Success`() = runTest {
         // 建立假的館區資料
         val fakeAreas = listOf(
             Area(
                 id = 1,
-                eNo = "1",
-                eName = "Area1",
-                eCategory = "",
-                ePicUrl = "",
-                eInfo = "",
-                eMemo = "",
-                eGeo = "",
-                eUrl = ""
+                no = "1",
+                name = "Area1",
+                category = "",
+                picUrl = "",
+                info = "",
+                memo = "",
+                geo = "",
+                url = ""
             )
         )
         // 用假資料建立假的 ApiService
