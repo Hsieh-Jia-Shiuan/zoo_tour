@@ -12,6 +12,7 @@
    https://data.taipei/api/v1/dataset/a3e2b221-75e0-45c1-8f97-75acbd43d613?scope=resourceAquire
 3. 臺北市立動物園 植物資料
    https://data.taipei/api/v1/dataset/e20706d8-bf89-4e6a-9768-db2a10bb2ba4?scope=resourceAquire
+
 *以上資料為台北市政府OpenData
 
 ---
@@ -19,8 +20,8 @@
 ## 🚀 功能說明
 
 - 主頁為顯示展館清單
-- 點擊展館可以進入展館詳細資訊頁面及展出的動植物清單
-- 點擊動植物可以進入動植物詳細資訊頁面
+- 點擊展館項目可以進入展館詳細資訊頁面及顯示展出的動植物清單
+- 點擊動植物項目可以進入動植物詳細資訊頁面
 
 ---
 
