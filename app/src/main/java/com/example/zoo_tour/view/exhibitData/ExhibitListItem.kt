@@ -2,16 +2,10 @@ package com.example.zoo_tour.view.exhibitData
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Warning
@@ -27,6 +21,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -47,22 +43,27 @@ fun ExhibitListItem(
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
+        ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            // 載入圖片
-            // 因為url回的資料會有http://開頭，會讀不到圖片
+            val (imageRef, textColRef, arrowRef) = createRefs()
+
+            // 圖片
             val rawImageUrl = item.imageUrls.firstOrNull()
             val securedImageUrl = rawImageUrl?.replace("http://", "https://")
-
-            securedImageUrl?.let { url ->
+            if (!securedImageUrl.isNullOrEmpty()) {
                 GlideImage(
-                    model = url,
+                    model = securedImageUrl,
                     contentDescription = item.name,
-                    modifier = Modifier.size(90.dp),
+                    modifier = Modifier
+                        .size(90.dp)
+                        .constrainAs(imageRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
                     contentScale = ContentScale.Crop,
                     loading = placeholder {
                         Box(
@@ -86,51 +87,71 @@ fun ExhibitListItem(
                         }
                     }
                 )
-            } ?: run {
+            } else {
                 Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_gallery),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(90.dp),
+                        .size(90.dp)
+                        .constrainAs(imageRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.Start
+            // 文字區塊
+            ConstraintLayout(
+                modifier = Modifier
+                    .constrainAs(textColRef) {
+                        start.linkTo(imageRef.end, margin = 8.dp)
+                        end.linkTo(arrowRef.start, margin = 8.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                    }
             ) {
-
+                val (nameRef, featureRef) = createRefs()
                 item.name?.let {
                     Text(
                         text = it,
                         style = ProjectTextStyle.H8,
                         color = ProjectColor.Black,
+                        modifier = Modifier.constrainAs(nameRef) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        }
                     )
                 }
-
                 item.feature?.let {
                     Text(
                         text = it,
                         style = ProjectTextStyle.H10,
                         color = ProjectColor.Black50,
                         maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.constrainAs(featureRef) {
+                            top.linkTo(nameRef.bottom, margin = 4.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        }
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             // 箭頭
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 modifier = Modifier
-                    .width(24.dp)
-                    .height(24.dp),
+                    .size(24.dp)
+                    .constrainAs(arrowRef) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    },
             )
         }
     }

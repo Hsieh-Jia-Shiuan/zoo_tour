@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -41,14 +42,8 @@ fun AreaListScreen(
     navController: NavController,
     repository: ZooRepository
 ) {
-    // 取得 viewModel
-    val viewModel: AreaListViewModel = viewModel(
-        factory = ZooViewModelFactory(repository)
-    )
-
-    // 收集管區狀態
+    val viewModel: AreaListViewModel = viewModel(factory = ZooViewModelFactory(repository))
     val areasState by viewModel.areas.collectAsState()
-
     val gson = Gson()
 
     Scaffold(
@@ -66,13 +61,17 @@ fun AreaListScreen(
     ) { paddingValues ->
         when (areasState) {
             is NetworkResult.Loading -> {
-                Box(
+                ConstraintLayout(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                        .padding(paddingValues)
                 ) {
-                    CircularProgressIndicator()
+                    val (progressRef) = createRefs()
+                    CircularProgressIndicator(
+                        modifier = Modifier.constrainAs(progressRef) {
+                            centerTo(parent)
+                        }
+                    )
                 }
             }
 
@@ -85,30 +84,29 @@ fun AreaListScreen(
                             .padding(paddingValues)
                     ) {
                         items(areas) { area ->
-                            // 前往館區資料
                             AreaListItem(area = area) {
-
                                 navController.navigate(
                                     "exhibit_data/${
-                                        Uri.encode(
-                                            gson.toJson(area)
-                                        )
+                                        Uri.encode(gson.toJson(area))
                                     }"
                                 )
                             }
                         }
                     }
                 } else {
-                    Box(
+                    ConstraintLayout(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                            .padding(paddingValues)
                     ) {
+                        val (textRef) = createRefs()
                         Text(
                             text = stringResource(R.string.area_list_no_data),
                             style = ProjectTextStyle.H8,
-                            color = ProjectColor.Black
+                            color = ProjectColor.Black,
+                            modifier = Modifier.constrainAs(textRef) {
+                                centerTo(parent)
+                            }
                         )
                     }
                 }
@@ -116,21 +114,24 @@ fun AreaListScreen(
 
             is NetworkResult.Error -> {
                 val errorMessage = areasState.message ?: "Unknown error"
-                Box(
+                ConstraintLayout(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                        .padding(paddingValues)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val (colRef) = createRefs()
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.constrainAs(colRef) {
+                            centerTo(parent)
+                        }
+                    ) {
                         Text(
                             "Error: $errorMessage",
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.padding(16.dp)
                         )
-
                         Spacer(modifier = Modifier.height(8.dp))
-
                         Button(onClick = { viewModel.fetchAreas() }) {
                             Text(
                                 text = stringResource(R.string.reload),

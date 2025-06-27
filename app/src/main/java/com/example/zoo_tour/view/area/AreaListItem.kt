@@ -2,10 +2,6 @@ package com.example.zoo_tour.view.area
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -48,21 +45,26 @@ fun AreaListItem(
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
+        ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(8.dp)
         ) {
-            // 載入圖片
-            // 因為url回的資料會有http://開頭，會讀不到圖片
-            val securedImageUrl = area.picUrl?.replace("http://", "https://")
+            val (imageRef, textColRef, arrowRef) = createRefs()
 
-            securedImageUrl?.let { url ->
+            // 圖片
+            val securedImageUrl = area.picUrl?.replace("http://", "https://")
+            if (!securedImageUrl.isNullOrEmpty()) {
                 GlideImage(
-                    model = url,
+                    model = securedImageUrl,
                     contentDescription = area.name,
-                    modifier = Modifier.size(90.dp),
+                    modifier = Modifier
+                        .size(90.dp)
+                        .constrainAs(imageRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
                     contentScale = ContentScale.Crop,
                     loading = placeholder {
                         CircularProgressIndicator(modifier = Modifier.size(50.dp))
@@ -76,55 +78,76 @@ fun AreaListItem(
                         )
                     }
                 )
-            } ?: run {
-                // 如果沒有圖片，顯示一個佔位符
+            } else {
                 Image(
                     painter = painterResource(id = android.R.drawable.ic_menu_gallery),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(90.dp),
+                        .size(90.dp)
+                        .constrainAs(imageRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.Start
+            // 文字區塊
+            ConstraintLayout(
+                modifier = Modifier
+                    .constrainAs(textColRef) {
+                        start.linkTo(imageRef.end, margin = 8.dp)
+                        end.linkTo(arrowRef.start, margin = 8.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                    }
             ) {
+                val (nameRef, infoRef, memoRef) = createRefs()
                 area.name?.let {
                     Text(
                         text = it,
                         style = ProjectTextStyle.H8,
                         color = ProjectColor.Black,
+                        modifier = Modifier.constrainAs(nameRef) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        }
                     )
                 }
-
                 area.info?.let {
                     Text(
                         text = it,
                         style = ProjectTextStyle.H10,
                         color = ProjectColor.Black50,
                         maxLines = if (area.memo.isNullOrEmpty()) 4 else 2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.constrainAs(infoRef) {
+                            top.linkTo(nameRef.bottom, margin = 4.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        }
                     )
                 }
-
-                // 休館時間及票價資訊
-                area.memo?.let {
+                area.memo?.takeIf { it.isNotEmpty() }?.let {
                     Text(
                         text = it,
                         style = ProjectTextStyle.H10,
                         color = ProjectColor.Black50,
                         fontWeight = FontWeight.Bold,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.constrainAs(memoRef) {
+                            top.linkTo(infoRef.bottom, margin = 4.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                        }
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             // 箭頭
             Icon(
@@ -132,7 +155,12 @@ fun AreaListItem(
                 contentDescription = null,
                 modifier = Modifier
                     .width(24.dp)
-                    .height(24.dp),
+                    .height(24.dp)
+                    .constrainAs(arrowRef) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    },
             )
         }
     }

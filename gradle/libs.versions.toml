@@ -18,6 +18,7 @@ loggingInterceptor = "5.0.0-alpha.2"
 runtimeLivedata = "1.8.2"
 glide = "4.16.0"
 glide-compose = "1.0.0-beta01"
+constraintlayoutCompose = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,6 +70,8 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
+# constraintlayout
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

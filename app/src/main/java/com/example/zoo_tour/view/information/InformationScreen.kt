@@ -3,6 +3,7 @@ package com.example.zoo_tour.view.information
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -11,10 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
@@ -39,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -109,172 +112,192 @@ fun InformationScreen(
             )
         }
     ) { paddingValues ->
-        when {
-            isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
+        } else if (exhibitItem != null) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                val (pagerRef, indicatorRef, contentRef) = createRefs()
 
-            exhibitItem != null -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    item {
+                if (securedImageUrls.isNotEmpty()) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .constrainAs(pagerRef) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 9f),
+                        beyondViewportPageCount = 1,
+                        key = { index -> securedImageUrls[index] }
+                    ) { page ->
+                        PagerImage(
+                            url = securedImageUrls[page],
+                            contentDescription = exhibitItem.name
+                        )
+                    }
+                }
+
+                if (securedImageUrls.size > 1) {
+                    PagerIndicator(
+                        pageCount = securedImageUrls.size,
+                        currentPage = currentPage,
+                        modifier = Modifier.constrainAs(indicatorRef) {
+                            top.linkTo(pagerRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.constrainAs(contentRef) {
                         if (securedImageUrls.isNotEmpty()) {
-                            HorizontalPager(
-                                state = pagerState,
-                                beyondViewportPageCount = 1, // 保留能改善圖片滑動時的 loading 延遲
-                                key = { index -> securedImageUrls[index] }, // 保證 Compose 不會錯誤重組頁面
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(16f / 9f)
-                            ) { page ->
-                                val url = securedImageUrls[page]
-                                PagerImage(
-                                    url = url,
-                                    contentDescription = exhibitItem.name
-                                )
-                            }
-
                             if (securedImageUrls.size > 1) {
-                                PagerIndicator(
-                                    pageCount = securedImageUrls.size,
-                                    currentPage = currentPage
-                                )
+                                top.linkTo(indicatorRef.bottom, margin = 16.dp)
+                            } else {
+                                top.linkTo(pagerRef.bottom, margin = 16.dp)
                             }
+                        } else {
+                            top.linkTo(parent.top)
                         }
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                ) {
+                    // 中文名稱
+                    InfoSection(
+                        content = exhibitItem.name,
+                        contentStyle = ProjectTextStyle.H5
+                    )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                    // 英文名
+                    InfoSection(
+                        content = exhibitItem.nameEnglish,
+                        contentStyle = ProjectTextStyle.H5
+                    )
 
-                        // 中文名稱
-                        InfoSection(
-                            content = exhibitItem.name,
-                            contentStyle = ProjectTextStyle.H5
-                        )
+                    // 展覽區域
+                    InfoSection(
+                        content = exhibitItem.location
+                    )
 
-                        // 英文名
-                        InfoSection(
-                            content = exhibitItem.nameEnglish,
-                            contentStyle = ProjectTextStyle.H5
-                        )
+                    InfoSection(
+                        title = stringResource(R.string.information_alsoKnown),
+                        content = exhibitItem.alsoKnown
+                    )
 
-                        // 展覽區域
-                        InfoSection(
-                            content = exhibitItem.location
-                        )
+                    // 分類
+                    when (exhibitItem) {
+                        is Animal -> {
+                            InfoSection(
+                                title = stringResource(R.string.information_phylum),
+                                content = exhibitItem.phylum
+                            )
 
-                        InfoSection(
-                            title = stringResource(R.string.information_alsoKnown),
-                            content = exhibitItem.alsoKnown
-                        )
+                            InfoSection(
+                                title = stringResource(R.string.information_clazz),
+                                content = exhibitItem.clazz
+                            )
 
-                        // 分類
-                        when (exhibitItem) {
-                            is Animal -> {
-                                InfoSection(
-                                    title = stringResource(R.string.information_phylum),
-                                    content = exhibitItem.phylum
-                                )
+                            InfoSection(
+                                title = stringResource(R.string.information_order),
+                                content = exhibitItem.order
+                            )
 
-                                InfoSection(
-                                    title = stringResource(R.string.information_clazz),
-                                    content = exhibitItem.clazz
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_order),
-                                    content = exhibitItem.order
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_family),
-                                    content = exhibitItem.family
-                                )
-                            }
-
-                            is Plant -> {
-                                InfoSection(
-                                    title = stringResource(R.string.information_family),
-                                    content = exhibitItem.family
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_genus),
-                                    content = exhibitItem.genus
-                                )
-                            }
-                        }
-
-                        InfoSection(
-                            title = stringResource(R.string.information_brief),
-                            content = exhibitItem.brief
-                        )
-
-                        InfoSection(
-                            title = stringResource(R.string.information_feature),
-                            content = exhibitItem.feature
-                        )
-
-                        when (exhibitItem) {
-                            is Animal -> {
-                                InfoSection(
-                                    title = stringResource(R.string.information_conservation),
-                                    content = exhibitItem.conservation
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_distribution),
-                                    content = exhibitItem.distribution
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_habitat),
-                                    content = exhibitItem.habitat
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_behavior),
-                                    content = exhibitItem.behavior
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_diet),
-                                    content = exhibitItem.diet
-                                )
-
-                                InfoSection(
-                                    title = stringResource(R.string.information_crisis),
-                                    content = exhibitItem.crisis
-                                )
-                            }
-
-                            is Plant -> {
-                                InfoSection(
-                                    title = stringResource(R.string.information_function_application),
-                                    content = exhibitItem.functionApplicationRaw
-                                )
-                            }
-                        }
-
-                        exhibitItem.update?.let {
-                            Text(
-                                stringResource(R.string.information_last_updated, it),
-                                style = ProjectTextStyle.H8,
-                                color = ProjectColor.Black,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                            InfoSection(
+                                title = stringResource(R.string.information_family),
+                                content = exhibitItem.family
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        is Plant -> {
+                            InfoSection(
+                                title = stringResource(R.string.information_family),
+                                content = exhibitItem.family
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_genus),
+                                content = exhibitItem.genus
+                            )
+                        }
                     }
+
+                    InfoSection(
+                        title = stringResource(R.string.information_brief),
+                        content = exhibitItem.brief
+                    )
+
+                    InfoSection(
+                        title = stringResource(R.string.information_feature),
+                        content = exhibitItem.feature
+                    )
+
+                    when (exhibitItem) {
+                        is Animal -> {
+                            InfoSection(
+                                title = stringResource(R.string.information_conservation),
+                                content = exhibitItem.conservation
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_distribution),
+                                content = exhibitItem.distribution
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_habitat),
+                                content = exhibitItem.habitat
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_behavior),
+                                content = exhibitItem.behavior
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_diet),
+                                content = exhibitItem.diet
+                            )
+
+                            InfoSection(
+                                title = stringResource(R.string.information_crisis),
+                                content = exhibitItem.crisis
+                            )
+                        }
+
+                        is Plant -> {
+                            InfoSection(
+                                title = stringResource(R.string.information_function_application),
+                                content = exhibitItem.functionApplicationRaw
+                            )
+                        }
+                    }
+
+                    exhibitItem.update?.let {
+                        Text(
+                            stringResource(R.string.information_last_updated, it),
+                            style = ProjectTextStyle.H8,
+                            color = ProjectColor.Black,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
@@ -288,28 +311,53 @@ fun InfoSection(
     content: String?,
     contentStyle: TextStyle = ProjectTextStyle.H8,
 ) {
-    if (content.isNullOrEmpty()) {
-        return
-    }
+    if (content.isNullOrEmpty()) return
 
-    title?.let {
-        it
+    Column(
+        modifier = modifier.padding(
+            bottom = 16.dp
+        )
+    ) {
+        title?.let {
+            Text(
+                text = it,
+                style = ProjectTextStyle.H7,
+                color = ProjectColor.Black,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
         Text(
-            text = it,
-            style = ProjectTextStyle.H7,
+            text = content,
+            style = contentStyle,
             color = ProjectColor.Black,
             modifier = modifier.padding(horizontal = 16.dp)
         )
     }
+}
 
-    Text(
-        text = content,
-        style = contentStyle,
-        color = ProjectColor.Black,
-        modifier = modifier.padding(horizontal = 16.dp)
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
+@Composable
+fun PagerIndicator(
+    pageCount: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        repeat(pageCount) { index ->
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .padding(2.dp)
+                    .background(
+                        color = if (index == currentPage) ProjectColor.Black else Color.LightGray,
+                        shape = CircleShape
+                    )
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -353,26 +401,4 @@ fun PagerImage(
             }
         }
     )
-}
-
-@Composable
-fun PagerIndicator(pageCount: Int, currentPage: Int) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        repeat(pageCount) { index ->
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .padding(2.dp)
-                    .background(
-                        if (currentPage == index) ProjectColor.Black else Color.LightGray,
-                        shape = CircleShape
-                    )
-            )
-        }
-    }
 }

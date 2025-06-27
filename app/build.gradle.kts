@@ -91,4 +91,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.glide.compose)
     kapt(libs.glide.compiler)
+
+    // constraintlayout
+    implementation(libs.androidx.constraintlayout.compose)
 }
