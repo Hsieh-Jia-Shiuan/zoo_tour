@@ -1,5 +1,6 @@
 package com.example.zoo_tour.view.area
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +33,7 @@ import com.example.zoo_tour.ui.theme.ProjectTextStyle
 import com.example.zoo_tour.util.NetworkResult
 import com.example.zoo_tour.viewModel.AreaListViewModel
 import com.example.zoo_tour.viewModel.ZooViewModelFactory
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
@@ -46,6 +48,8 @@ fun AreaListScreen(
 
     // 收集管區狀態
     val areasState by viewModel.areas.collectAsState()
+
+    val gson = Gson()
 
     Scaffold(
         topBar = {
@@ -83,7 +87,14 @@ fun AreaListScreen(
                         items(areas) { area ->
                             // 前往館區資料
                             AreaListItem(area = area) {
-                                navController.navigate("exhibit_data/${area.eName}")
+
+                                navController.navigate(
+                                    "exhibit_data/${
+                                        Uri.encode(
+                                            gson.toJson(area)
+                                        )
+                                    }"
+                                )
                             }
                         }
                     }

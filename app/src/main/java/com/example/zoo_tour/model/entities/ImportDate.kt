@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ImportDate(
-    @SerializedName("date") val date: String,
-    @SerializedName("timezone_type") val timezoneType: Int,
-    @SerializedName("timezone") val timezone: String
+    @SerializedName("date") val date: String?,
+    @SerializedName("timezone_type") val timezoneType: Int?,
+    @SerializedName("timezone") val timezone: String?
 ) : Parcelable

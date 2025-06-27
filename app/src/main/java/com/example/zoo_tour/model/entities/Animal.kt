@@ -5,25 +5,25 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Animal(
-    @SerializedName("_id") override val id: Int,
-    @SerializedName("_importdate") override val importDate: ImportDate,
-    @SerializedName("a_name_ch") val nameCh: String,
+    @SerializedName("_id") override val id: Int?,
+    @SerializedName("_importdate") override val importDate: ImportDate?,
+    @SerializedName("a_name_ch") val nameCh: String?,
     @SerializedName("a_summary") override val summary: String?,
     @SerializedName("a_keywords") override val keywords: String?,
     @SerializedName("a_alsoknown") override val alsoKnown: String?,
-    @SerializedName("a_geo") override val geo: String,
-    @SerializedName("a_location") override val location: String,
+    @SerializedName("a_geo") override val geo: String?,
+    @SerializedName("a_location") override val location: String?,
     @SerializedName("a_poigroup") val pioGroup: String?,
     @SerializedName("a_name_en") override val nameEnglish: String?,
-    @SerializedName("a_name_latin") override val nameLatin: String,
-    @SerializedName("a_phylum") val phylum: String,
-    @SerializedName("a_class") val clazz: String,
-    @SerializedName("a_order") val order: String,
-    @SerializedName("a_family") override val family: String,
+    @SerializedName("a_name_latin") override val nameLatin: String?,
+    @SerializedName("a_phylum") val phylum: String?,
+    @SerializedName("a_class") val clazz: String?,
+    @SerializedName("a_order") val order: String?,
+    @SerializedName("a_family") override val family: String?,
     @SerializedName("a_conservation") val conservation: String?,
     @SerializedName("a_distribution") val distribution: String?,
     @SerializedName("a_habitat") val habitat: String?,
-    @SerializedName("a_feature") override val feature: String,
+    @SerializedName("a_feature") override val feature: String?,
     @SerializedName("a_behavior") val behavior: String?,
     @SerializedName("a_diet") val diet: String?,
     @SerializedName("a_crisis") val crisis: String?,
@@ -54,7 +54,7 @@ data class Animal(
     @SerializedName("a_update") override val update: String?,
     @SerializedName("a_cid") override val cid: String?
 ) : ExhibitItem {
-    override val name: String
+    override val name: String?
         get() = nameCh
     override val brief: String?
         get() = interpretation?.takeIf { it.isNotBlank() }

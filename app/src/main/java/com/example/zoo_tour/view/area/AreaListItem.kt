@@ -56,12 +56,12 @@ fun AreaListItem(
         ) {
             // 載入圖片
             // 因為url回的資料會有http://開頭，會讀不到圖片
-            val securedImageUrl = area.ePicUrl?.replace("http://", "https://")
+            val securedImageUrl = area.picUrl?.replace("http://", "https://")
 
             securedImageUrl?.let { url ->
                 GlideImage(
                     model = url,
-                    contentDescription = area.eName,
+                    contentDescription = area.name,
                     modifier = Modifier.size(90.dp),
                     contentScale = ContentScale.Crop,
                     loading = placeholder {
@@ -93,24 +93,28 @@ fun AreaListItem(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = area.eName,
-                    style = ProjectTextStyle.H8,
-                    color = ProjectColor.Black
-                )
+                area.name?.let {
+                    Text(
+                        text = it,
+                        style = ProjectTextStyle.H8,
+                        color = ProjectColor.Black,
+                    )
+                }
 
-                Text(
-                    text = area.eInfo,
-                    style = ProjectTextStyle.H10,
-                    color = ProjectColor.Black50,
-                    maxLines = if (area.eMemo.isNullOrEmpty()) 4 else 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                area.info?.let {
+                    Text(
+                        text = it,
+                        style = ProjectTextStyle.H10,
+                        color = ProjectColor.Black50,
+                        maxLines = if (area.memo.isNullOrEmpty()) 4 else 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
                 // 休館時間及票價資訊
-                if (area.eMemo != null && area.eMemo.isNotEmpty()) {
+                area.memo?.let {
                     Text(
-                        text = area.eMemo,
+                        text = it,
                         style = ProjectTextStyle.H10,
                         color = ProjectColor.Black50,
                         fontWeight = FontWeight.Bold,
@@ -118,7 +122,6 @@ fun AreaListItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -141,14 +144,14 @@ fun AreaListItemPreview() {
     AreaListItem(
         area = Area(
             id = 1,
-            eNo = "測試編號",
-            eCategory = "戶外區",
-            eName = "臺灣動物區",
-            ePicUrl = "http://www.zoo.gov.tw/iTAP/05_Exhibit/01_FormosanAnimal.jpg",
-            eInfo = "臺灣位於北半球，北迴歸線橫越南部，造成亞熱帶溫和多雨的氣候。又因高山急流、起伏多樣的地形，因而在這蕞爾小島上，形成了多樣性的生態系，孕育了多種不同生態習性的動、植物，豐富的生物物種共存共榮於此，也使臺灣博得美麗之島「福爾摩沙」的美名。 臺灣動物區以臺灣原生動物與棲息環境為展示重點，佈置模擬動物原生棲地之生態環境，讓動物表現如野外般自然的生活習性，引導民眾更正確地認識本土野生動物，為園區環境教育的重要據點。藉由提供動物寬廣且具隱蔽的生態環境，讓動物避開人為過度的干擾，並展現如野外般自然的生活習性和行為。展示區以多種臺灣的保育類野生動物貫連成保育廊道，包括臺灣黑熊、穿山甲、歐亞水獺、白鼻心、石虎、山羌等。唯有認識、瞭解本土野生動物，才能愛護、保育牠們，並進而珍惜我們共同生存的這塊土地！",
-            eMemo = "每週一休館，入館門票：全票20元、優待票10元",
-            eGeo = "測試場域位置",
-            eUrl = "測試場域網址"
+            no = "測試編號",
+            category = "戶外區",
+            name = "臺灣動物區",
+            picUrl = "http://www.zoo.gov.tw/iTAP/05_Exhibit/01_FormosanAnimal.jpg",
+            info = "臺灣位於北半球，北迴歸線橫越南部，造成亞熱帶溫和多雨的氣候。又因高山急流、起伏多樣的地形，因而在這蕞爾小島上，形成了多樣性的生態系，孕育了多種不同生態習性的動、植物，豐富的生物物種共存共榮於此，也使臺灣博得美麗之島「福爾摩沙」的美名。 臺灣動物區以臺灣原生動物與棲息環境為展示重點，佈置模擬動物原生棲地之生態環境，讓動物表現如野外般自然的生活習性，引導民眾更正確地認識本土野生動物，為園區環境教育的重要據點。藉由提供動物寬廣且具隱蔽的生態環境，讓動物避開人為過度的干擾，並展現如野外般自然的生活習性和行為。展示區以多種臺灣的保育類野生動物貫連成保育廊道，包括臺灣黑熊、穿山甲、歐亞水獺、白鼻心、石虎、山羌等。唯有認識、瞭解本土野生動物，才能愛護、保育牠們，並進而珍惜我們共同生存的這塊土地！",
+            memo = "每週一休館，入館門票：全票20元、優待票10元",
+            geo = "測試場域位置",
+            url = "測試場域網址"
         ),
         onClick = {}
     )
@@ -160,14 +163,14 @@ fun AreaListItem_NoMemoPreview() {
     AreaListItem(
         area = Area(
             id = 1,
-            eNo = "測試編號",
-            eCategory = "戶外區",
-            eName = "臺灣動物區",
-            ePicUrl = "",
-            eInfo = "臺灣位於北半球，北迴歸線橫越南部，造成亞熱帶溫和多雨的氣候。又因高山急流、起伏多樣的地形，因而在這蕞爾小島上，形成了多樣性的生態系，孕育了多種不同生態習性的動、植物，豐富的生物物種共存共榮於此，也使臺灣博得美麗之島「福爾摩沙」的美名。 臺灣動物區以臺灣原生動物與棲息環境為展示重點，佈置模擬動物原生棲地之生態環境，讓動物表現如野外般自然的生活習性，引導民眾更正確地認識本土野生動物，為園區環境教育的重要據點。藉由提供動物寬廣且具隱蔽的生態環境，讓動物避開人為過度的干擾，並展現如野外般自然的生活習性和行為。展示區以多種臺灣的保育類野生動物貫連成保育廊道，包括臺灣黑熊、穿山甲、歐亞水獺、白鼻心、石虎、山羌等。唯有認識、瞭解本土野生動物，才能愛護、保育牠們，並進而珍惜我們共同生存的這塊土地！",
-            eMemo = "",
-            eGeo = "測試場域位置",
-            eUrl = "測試場域網址"
+            no = "測試編號",
+            category = "戶外區",
+            name = "臺灣動物區",
+            picUrl = "",
+            info = "臺灣位於北半球，北迴歸線橫越南部，造成亞熱帶溫和多雨的氣候。又因高山急流、起伏多樣的地形，因而在這蕞爾小島上，形成了多樣性的生態系，孕育了多種不同生態習性的動、植物，豐富的生物物種共存共榮於此，也使臺灣博得美麗之島「福爾摩沙」的美名。 臺灣動物區以臺灣原生動物與棲息環境為展示重點，佈置模擬動物原生棲地之生態環境，讓動物表現如野外般自然的生活習性，引導民眾更正確地認識本土野生動物，為園區環境教育的重要據點。藉由提供動物寬廣且具隱蔽的生態環境，讓動物避開人為過度的干擾，並展現如野外般自然的生活習性和行為。展示區以多種臺灣的保育類野生動物貫連成保育廊道，包括臺灣黑熊、穿山甲、歐亞水獺、白鼻心、石虎、山羌等。唯有認識、瞭解本土野生動物，才能愛護、保育牠們，並進而珍惜我們共同生存的這塊土地！",
+            memo = "",
+            geo = "測試場域位置",
+            url = "測試場域網址"
         ),
         onClick = {}
     )

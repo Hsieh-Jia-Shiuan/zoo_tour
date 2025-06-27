@@ -4,11 +4,27 @@
     <string name="area_list_title">台北市立動物園</string>
     <string name="area_list_no_data">沒有館區資料。</string>
     <string name="exhibit_data_title">館內資料清單</string>
+    <string name="exhibit_data_web_view">在網頁開啟</string>
     <string name="exhibit_data_animals">動物</string>
     <string name="exhibit_data_plants">植物</string>
-    <string name="exhibit_data_empty">在 \'%s\' 館區沒有找到%s資料。</string>
     <string name="exhibit_data_all_empty">在 \'%s\' 館區\n沒有找到動物或植物資料。</string>
     <string name="information_title">詳細資料</string>
     <string name="information_not_found">沒有找到動物或植物資料。</string>
-
+    <string name="information_alsoKnown">別名</string>
+    <string name="information_phylum">門</string>
+    <string name="information_clazz">綱</string>
+    <string name="information_order">目</string>
+    <string name="information_family">科</string>
+    <string name="information_genus">屬</string>
+    <string name="information_brief">簡介</string>
+    <string name="information_feature">辨認方式</string>
+    <string name="information_conservation">危機</string>
+    <string name="information_distribution">分佈</string>
+    <string name="information_habitat">棲息地</string>
+    <string name="information_behavior">行為</string>
+    <string name="information_diet">飲食</string>
+    <string name="information_crisis">危機</string>
+    <string name="information_function_application">功能性</string>
+    <string name="information_last_updated">最後更新: %s</string>
+    <string name="back">返回</string>
 </resources>

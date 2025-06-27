@@ -3,19 +3,19 @@ package com.example.zoo_tour.model.entities
 import android.os.Parcelable
 
 interface ExhibitItem : Parcelable {
-    val id: Int
-    val importDate: ImportDate
-    val name: String
+    val id: Int?
+    val importDate: ImportDate?
+    val name: String?
     val summary: String?
     val keywords: String?
     val alsoKnown: String?
-    val geo: String
-    val location: String
+    val geo: String?
+    val location: String?
     val nameEnglish: String?
-    val nameLatin: String
-    val family: String
+    val nameLatin: String?
+    val family: String?
     val brief: String?
-    val feature: String
+    val feature: String?
     val code: String?
 
     val pic01Url: String?
@@ -43,6 +43,6 @@ interface ExhibitItem : Parcelable {
     val update: String?
     val cid: String?
 
-    val imageUrl: String?
-        get() = pic01Url ?: pic02Url ?: pic03Url ?: pic04Url
+    val imageUrls: List<String>
+        get() = listOfNotNull(pic01Url, pic02Url, pic03Url, pic04Url)
 }

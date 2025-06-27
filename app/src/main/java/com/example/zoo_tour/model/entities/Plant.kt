@@ -5,20 +5,20 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Plant(
-    @SerializedName("_id") override val id: Int,
-    @SerializedName("_importdate") override val importDate: ImportDate,
-    @SerializedName("f_name_ch") val nameChinese: String,
+    @SerializedName("_id") override val id: Int?,
+    @SerializedName("_importdate") override val importDate: ImportDate?,
+    @SerializedName("f_name_ch") val nameChinese: String?,
     @SerializedName("f_summary") override val summary: String?,
     @SerializedName("f_keywords") override val keywords: String?,
     @SerializedName("f_alsoknown") override val alsoKnown: String?,
-    @SerializedName("f_geo") override val geo: String,
-    @SerializedName("f_location") override val location: String,
+    @SerializedName("f_geo") override val geo: String?,
+    @SerializedName("f_location") override val location: String?,
     @SerializedName("f_name_en") override val nameEnglish: String?,
-    @SerializedName("f_name_latin") override val nameLatin: String,
-    @SerializedName("f_family") override val family: String,
+    @SerializedName("f_name_latin") override val nameLatin: String?,
+    @SerializedName("f_family") override val family: String?,
     @SerializedName("f_genus") val genus: String?,
     @SerializedName("f_brief") override val brief: String?,
-    @SerializedName("f_feature") override val feature: String,
+    @SerializedName("f_feature") override val feature: String?,
     @SerializedName("f_function＆application") val functionApplicationRaw: String?,
     @SerializedName("f_code") override val code: String?,
     @SerializedName("f_pic01_url") override val pic01Url: String?,
@@ -43,6 +43,6 @@ data class Plant(
     @SerializedName("f_update") override val update: String?,
     @SerializedName("f_cid") override val cid: String?
 ) : ExhibitItem {
-    override val name: String
+    override val name: String?
         get() = nameChinese
 }

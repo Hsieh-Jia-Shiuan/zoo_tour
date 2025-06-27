@@ -4,10 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,14 +22,19 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.zoo_tour.model.dataSource.RemoteDataSource
 import com.example.zoo_tour.model.dataSource.ZooApiService
-import com.example.zoo_tour.model.entities.ExhibitItem
+import com.example.zoo_tour.model.entities.Animal
+import com.example.zoo_tour.model.entities.Area
+import com.example.zoo_tour.model.entities.Plant
 import com.example.zoo_tour.model.repositories.ZooRepository
+import com.example.zoo_tour.ui.theme.ProjectColor
+import com.example.zoo_tour.ui.theme.ProjectTextStyle
 import com.example.zoo_tour.ui.theme.ZooTourTheme
 import com.example.zoo_tour.util.Constants.BASE_URL
 import com.example.zoo_tour.view.area.AreaListScreen
 import com.example.zoo_tour.view.exhibitData.ExhibitDataScreen
 import com.example.zoo_tour.view.information.InformationScreen
-import com.example.zoo_tour.viewModel.ZooViewModelFactory
+import com.example.zoo_tour.view.webView.WebViewScreen
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -75,29 +87,51 @@ class MainActivity : ComponentActivity() {
 
                         // 館內資料
                         composable(
-                            "exhibit_data/{areaName}",
-                            arguments = listOf(navArgument("areaName") {
-                                type = NavType.StringType
-                            })
+                            "exhibit_data/{areaJson}",
+                            arguments = listOf(
+                                navArgument("areaJson") { type = NavType.StringType }
+                            )
                         ) { backStackEntry ->
-                            val areaName = backStackEntry.arguments?.getString("areaName")
+                            val type = backStackEntry.arguments?.getString("type")
+                            val json = backStackEntry.arguments?.getString("areaJson")
+                            val gson = Gson()
+                            val area = gson.fromJson(json, Area::class.java)
                             ExhibitDataScreen(
                                 navController = navController,
                                 repository = repository,
-                                areaName = areaName
+                                area = area
                             )
                         }
 
                         // 動物或植物詳細資料
-                        composable("information_detail") { backStackEntry ->
-                            val exhibitItem = navController.previousBackStackEntry
-                                ?.savedStateHandle
-                                ?.get<ExhibitItem>("exhibitItem")
-
+                        composable(
+                            "information_detail/{type}/{exhibitItemJson}",
+                            arguments = listOf(
+                                navArgument("type") { type = NavType.StringType },
+                                navArgument("exhibitItemJson") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val type = backStackEntry.arguments?.getString("type")
+                            val json = backStackEntry.arguments?.getString("exhibitItemJson")
+                            val gson = Gson()
+                            val exhibitItem = when (type) {
+                                "animal" -> gson.fromJson(json, Animal::class.java)
+                                "plant" -> gson.fromJson(json, Plant::class.java)
+                                else -> null
+                            }
                             InformationScreen(
                                 navController = navController,
                                 exhibitItem = exhibitItem
                             )
+                        }
+
+                        // WebView
+                        composable(
+                            "webview/{url}",
+                            arguments = listOf(navArgument("url") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val url = backStackEntry.arguments?.getString("url") ?: ""
+                            WebViewScreen(url = url)
                         }
                     }
                 }

@@ -55,7 +55,7 @@ fun ExhibitListItem(
         ) {
             // 載入圖片
             // 因為url回的資料會有http://開頭，會讀不到圖片
-            val rawImageUrl = item.imageUrl
+            val rawImageUrl = item.imageUrls.firstOrNull()
             val securedImageUrl = rawImageUrl?.replace("http://", "https://")
 
             securedImageUrl?.let { url ->
@@ -102,19 +102,24 @@ fun ExhibitListItem(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = item.name,
-                    style = ProjectTextStyle.H8,
-                    color = ProjectColor.Black
-                )
 
-                Text(
-                    text = item.feature,
-                    style = ProjectTextStyle.H10,
-                    color = ProjectColor.Black50,
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis
-                )
+                item.name?.let {
+                    Text(
+                        text = it,
+                        style = ProjectTextStyle.H8,
+                        color = ProjectColor.Black,
+                    )
+                }
+
+                item.feature?.let {
+                    Text(
+                        text = it,
+                        style = ProjectTextStyle.H10,
+                        color = ProjectColor.Black50,
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.width(8.dp))
